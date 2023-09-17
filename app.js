@@ -9,7 +9,6 @@ const { PORT = 3000 } = process.env;
 
 const { errors } = require("celebrate");
 const userRoute = require("./routes/users");
-const cardRoute = require("./routes/cards");
 
 const NotFoundError = require("./errors/not-found-err");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
@@ -28,7 +27,6 @@ app.use(bodyParser.json());
 app.use(requestLogger);
 
 app.use(userRoute);
-app.use(cardRoute);
 
 app.use((req, res, next) => {
   const error = new NotFoundError("A solicitação não foi encontrada");
