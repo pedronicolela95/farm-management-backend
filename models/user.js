@@ -58,12 +58,6 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-
-  cashFlowAtCreation: {
-    type: Number,
-    default: 0,
-    required: true,
-  },
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(

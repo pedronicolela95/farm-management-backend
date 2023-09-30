@@ -1,4 +1,4 @@
-require("dotenv").config();
+// require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -9,13 +9,14 @@ const { PORT = 3000 } = process.env;
 
 const { errors } = require("celebrate");
 const userRoute = require("./routes/users");
+const financialRoute = require("./routes/financials");
 
 const NotFoundError = require("./errors/not-found-err");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 
-mongoose.connect(process.env.DB_URL, {
+mongoose.connect("mongodb://localhost:27017/aroundb", {
   useNewUrlParser: true,
 });
 
@@ -27,6 +28,7 @@ app.use(bodyParser.json());
 app.use(requestLogger);
 
 app.use(userRoute);
+app.use(financialRoute);
 
 app.use((req, res, next) => {
   const error = new NotFoundError("A solicitação não foi encontrada");

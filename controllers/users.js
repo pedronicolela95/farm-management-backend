@@ -12,8 +12,7 @@ const NotAuthorizedError = require("../errors/not-authorized-err");
 const ConflictError = require("../errors/conflict-err");
 
 module.exports.createUsers = (req, res, next) => {
-  const { email, farmName, city, state, farmPhoto, cashFlowAtCreation } =
-    req.body;
+  const { email, farmName, city, state, farmPhoto } = req.body;
 
   User.findOne({ email })
     .then((existingUser) => {
@@ -31,7 +30,6 @@ module.exports.createUsers = (req, res, next) => {
         city,
         state,
         farmPhoto,
-        cashFlowAtCreation,
       })
     )
     .then((user) => res.send({ user }))

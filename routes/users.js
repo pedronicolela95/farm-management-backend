@@ -17,9 +17,8 @@ const userSchema = Joi.object({
   farmName: Joi.string().min(2).max(50).required(),
   city: Joi.string().min(2).max(50).required(),
   state: Joi.string().min(2).max(50).required(),
-  farmPhoto: Joi.string().custom(validateURL).required(),
+  farmPhoto: Joi.string().custom(validateURL),
   createdAt: Joi.date().default(new Date()),
-  cashFlowAtCreation: Joi.number().integer().default(0).required(),
 });
 
 router.get("/crash-test", () => {
@@ -47,10 +46,11 @@ router.patch(
   "/farm-info",
   auth,
   celebrate({
-    [Segments.BODY]: {
-      name: Joi.string().min(2).max(30),
-      about: Joi.string().min(2).max(30),
-    },
+    [Segments.BODY]: Joi.object({
+      farmName: Joi.string().min(2).max(50).required(),
+      city: Joi.string().min(2).max(50).required(),
+      state: Joi.string().min(2).max(50).required(),
+    }),
   }),
   updateUserProfile
 );
@@ -59,7 +59,9 @@ router.patch(
   "/farm-info/farm-photo",
   auth,
   celebrate({
-    [Segments.BODY]: { avatar: Joi.string().custom(validateURL).required() },
+    [Segments.BODY]: Joi.object({
+      farmPhoto: Joi.string().custom(validateURL),
+    }),
   }),
   updateUserAvatar
 );
