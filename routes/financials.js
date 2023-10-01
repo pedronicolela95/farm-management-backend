@@ -40,9 +40,7 @@ const financialValidationSchema = {
     type: Joi.string().valid("Receita", "Custo").required(),
     date: Joi.date().iso().required(),
     amount: Joi.number().min(0.01).required(),
-    hasOcurred: Joi.boolean().default(true),
-    farm: objectIdSchema.required(),
-    createdAt: Joi.date().iso().default(Date.now),
+    hasOcurred: Joi.boolean().default(true).required(),
   }),
 };
 
