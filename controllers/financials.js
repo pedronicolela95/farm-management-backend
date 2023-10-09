@@ -16,7 +16,7 @@ module.exports.getFinancials = (req, res, next) => {
     });
 };
 
-module.exports.createFinancial = (req, res) => {
+module.exports.createFinancial = (req, res, next) => {
   const { description, category, type, date, amount, hasOcurred } = req.body;
 
   const inputDate = moment(date).startOf("day");
@@ -99,9 +99,6 @@ module.exports.convertProjectedFinancial = (req, res, next) => {
 module.exports.calculateFinancialsMonthly = (req, res, next) => {
   const { type, hasOcurred } = req.body;
   Financial.find({ farm: req.user._id, type: type, hasOcurred: hasOcurred })
-    .orFail(() => {
-      throw new NotFoundError("Nenhum registro encontrado");
-    })
     .then((financial) => {
       return calculateTwelveMonths(financial, hasOcurred);
     })
@@ -118,9 +115,6 @@ module.exports.calculateFinancialsMonthly = (req, res, next) => {
 module.exports.calculateProfitMonthly = (req, res, next) => {
   const { hasOcurred } = req.body;
   Financial.find({ farm: req.user._id, hasOcurred: hasOcurred })
-    .orFail(() => {
-      throw new NotFoundError("Nenhum registro encontrado");
-    })
     .then((financial) => {
       const costFinancials = financial.filter(
         (financial) => financial.type === "Custo"
@@ -157,9 +151,6 @@ module.exports.calculateProfitMonthly = (req, res, next) => {
 module.exports.calculateCategoryPercentage = (req, res, next) => {
   const { type, hasOcurred } = req.body;
   Financial.find({ farm: req.user._id, type: type, hasOcurred: hasOcurred })
-    .orFail(() => {
-      throw new NotFoundError("Nenhum registro encontrado");
-    })
     .then((financial) => {
       return calculateFinancialsCategory(financial, hasOcurred);
     })

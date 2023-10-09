@@ -46,12 +46,8 @@ const financialValidationSchema = {
 
 router.get("/financials", auth, getFinancials);
 
-router.post(
-  "/financials",
-  auth,
-  celebrate({ [Segments.BODY]: financialValidationSchema }),
-  createFinancial
-);
+router.post("/financials", auth, createFinancial);
+// fix me celebrate
 
 router.delete(
   "/financials/:financialId",
@@ -75,7 +71,7 @@ router.patch(
   convertProjectedFinancial
 );
 
-router.get(
+router.post(
   "/financials/financials-monthly",
   auth,
   celebrate({
@@ -87,7 +83,7 @@ router.get(
   calculateFinancialsMonthly
 );
 
-router.get(
+router.post(
   "/financials/profit-monthly",
   auth,
   celebrate({
@@ -98,7 +94,7 @@ router.get(
   calculateProfitMonthly
 );
 
-router.get(
+router.post(
   "/financials/financials-category",
   auth,
   celebrate({
