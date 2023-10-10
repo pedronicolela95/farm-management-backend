@@ -1,4 +1,4 @@
-// require("dotenv").config();
+require("dotenv").config();
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -16,7 +16,7 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 
-mongoose.connect("mongodb://localhost:27017/aroundb", {
+mongoose.connect(process.env.DB_URL, {
   useNewUrlParser: true,
 });
 

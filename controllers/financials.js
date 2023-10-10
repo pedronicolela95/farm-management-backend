@@ -1,3 +1,4 @@
+const moment = require("moment");
 const Financial = require("../models/financial");
 const BadRequestError = require("../errors/bad-request-err");
 const ForbiddenError = require("../errors/forbidden-err");
@@ -6,7 +7,6 @@ const {
   calculateTwelveMonths,
   calculateFinancialsCategory,
 } = require("../utils/helpers");
-const moment = require("moment");
 
 module.exports.getFinancials = (req, res, next) => {
   Financial.find({ farm: req.user._id })
@@ -17,7 +17,9 @@ module.exports.getFinancials = (req, res, next) => {
 };
 
 module.exports.createFinancial = (req, res, next) => {
-  const { description, category, type, date, amount, hasOcurred } = req.body;
+  const {
+    description, category, type, date, amount, hasOcurred,
+  } = req.body;
 
   const inputDate = moment(date).startOf("day");
   const today = moment().startOf("day");
@@ -26,7 +28,7 @@ module.exports.createFinancial = (req, res, next) => {
     throw new BadRequestError("Finança ocorrida com data de criação no futuro");
   } else if (hasOcurred === false && inputDate.isBefore(today)) {
     throw new BadRequestError(
-      "Finança projetada com data de criação no passado"
+      "Finança projetada com data de criação no passado",
     );
   }
   Financial.create({
@@ -79,7 +81,7 @@ module.exports.convertProjectedFinancial = (req, res, next) => {
         throw new ForbiddenError("Usuário não possui autorização");
       } else if (financial.hasOcurred === true) {
         throw new BadRequestError(
-          "Resgistro já está classificado como realizada"
+          "Resgistro já está classificado como realizada",
         );
       }
       return Financial.findByIdAndUpdate(req.params.financialId, {
@@ -98,10 +100,8 @@ module.exports.convertProjectedFinancial = (req, res, next) => {
 
 module.exports.calculateFinancialsMonthly = (req, res, next) => {
   const { type, hasOcurred } = req.body;
-  Financial.find({ farm: req.user._id, type: type, hasOcurred: hasOcurred })
-    .then((financial) => {
-      return calculateTwelveMonths(financial, hasOcurred);
-    })
+  Financial.find({ farm: req.user._id, type, hasOcurred })
+    .then((financial) => calculateTwelveMonths(financial, hasOcurred))
     .then((calculateFinancials) => res.send({ calculateFinancials }))
     .catch((err) => {
       if (err.name === "CastError") {
@@ -114,28 +114,26 @@ module.exports.calculateFinancialsMonthly = (req, res, next) => {
 
 module.exports.calculateProfitMonthly = (req, res, next) => {
   const { hasOcurred } = req.body;
-  Financial.find({ farm: req.user._id, hasOcurred: hasOcurred })
+  Financial.find({ farm: req.user._id, hasOcurred })
     .then((financial) => {
       const costFinancials = financial.filter(
-        (financial) => financial.type === "Custo"
+        (unidade) => unidade.type === "Custo",
       );
       const revenueFinancials = financial.filter(
-        (financial) => financial.type === "Receita"
+        (unidade) => unidade.type === "Receita",
       );
 
-      // Calcular os valores mensais de custo e receita
       const costMonthly = calculateTwelveMonths(costFinancials, hasOcurred);
       const revenueMonthly = calculateTwelveMonths(
         revenueFinancials,
-        hasOcurred
+        hasOcurred,
       );
 
-      // Calcular o lucro mensal (receita - custo)
       const profit = {};
 
-      for (const key in revenueMonthly) {
+      Object.keys(revenueMonthly).forEach((key) => {
         profit[key] = revenueMonthly[key] - costMonthly[key];
-      }
+      });
       return profit;
     })
     .then((profit) => res.send({ profit }))
@@ -150,10 +148,8 @@ module.exports.calculateProfitMonthly = (req, res, next) => {
 
 module.exports.calculateCategoryPercentage = (req, res, next) => {
   const { type, hasOcurred } = req.body;
-  Financial.find({ farm: req.user._id, type: type, hasOcurred: hasOcurred })
-    .then((financial) => {
-      return calculateFinancialsCategory(financial, hasOcurred);
-    })
+  Financial.find({ farm: req.user._id, type, hasOcurred })
+    .then((financial) => calculateFinancialsCategory(financial, hasOcurred))
     .then((financial) => res.send({ financial }))
     .catch((err) => {
       if (err.name === "CastError") {

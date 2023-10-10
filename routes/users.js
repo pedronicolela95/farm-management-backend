@@ -37,7 +37,7 @@ router.post(
       password: Joi.string().required(),
     }),
   }),
-  login
+  login,
 );
 
 router.get("/farm-info", auth, getUserInfo);
@@ -52,7 +52,7 @@ router.patch(
       state: Joi.string().min(2).max(50).required(),
     }),
   }),
-  updateUserProfile
+  updateUserProfile,
 );
 
 router.patch(
@@ -63,7 +63,7 @@ router.patch(
       farmPhoto: Joi.string().custom(validateURL),
     }),
   }),
-  updateUserAvatar
+  updateUserAvatar,
 );
 
 module.exports = router;

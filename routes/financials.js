@@ -20,34 +20,36 @@ const objectIdSchema = Joi.string().custom((value, helpers) => {
   return value;
 }, "object id validation");
 
-const financialValidationSchema = {
-  body: Joi.object().keys({
-    description: Joi.string().min(2).max(30).required(),
-    category: Joi.string()
-      .valid(
-        "Insumos Agrícolas",
-        "Mão de Obra",
-        "Despesas com Animais",
-        "Despesas Administrativas",
-        "Facilities",
-        "Custos de Marketing e Vendas",
-        "Venda de Animais",
-        "Venda de Produtos Agrícolas",
-        "Arrendamento de Terras",
-        "Outros"
-      )
-      .required(),
-    type: Joi.string().valid("Receita", "Custo").required(),
-    date: Joi.date().iso().required(),
-    amount: Joi.number().min(0.01).required(),
-    hasOcurred: Joi.boolean().default(true).required(),
-  }),
-};
-
 router.get("/financials", auth, getFinancials);
 
-router.post("/financials", auth, createFinancial);
-// fix me celebrate
+router.post(
+  "/financials",
+  auth,
+  celebrate({
+    [Segments.BODY]: Joi.object({
+      description: Joi.string().min(2).max(30).required(),
+      category: Joi.string()
+        .valid(
+          "Insumos Agrícolas",
+          "Mão de Obra",
+          "Despesas com Animais",
+          "Despesas Administrativas",
+          "Facilities",
+          "Custos de Marketing e Vendas",
+          "Venda de Animais",
+          "Venda de Produtos Agrícolas",
+          "Arrendamento de Terras",
+          "Outros",
+        )
+        .required(),
+      type: Joi.string().valid("Receita", "Custo").required(),
+      date: Joi.date().iso().required(),
+      amount: Joi.number().min(0.01).required(),
+      hasOcurred: Joi.boolean().default(true).required(),
+    }),
+  }),
+  createFinancial,
+);
 
 router.delete(
   "/financials/:financialId",
@@ -57,7 +59,7 @@ router.delete(
       financialId: objectIdSchema.required(),
     }),
   }),
-  deleteFinancial
+  deleteFinancial,
 );
 
 router.patch(
@@ -68,7 +70,7 @@ router.patch(
       financialId: objectIdSchema.required(),
     }),
   }),
-  convertProjectedFinancial
+  convertProjectedFinancial,
 );
 
 router.post(
@@ -80,7 +82,7 @@ router.post(
       hasOcurred: Joi.boolean().required(),
     }),
   }),
-  calculateFinancialsMonthly
+  calculateFinancialsMonthly,
 );
 
 router.post(
@@ -91,7 +93,7 @@ router.post(
       hasOcurred: Joi.boolean().required(),
     }),
   }),
-  calculateProfitMonthly
+  calculateProfitMonthly,
 );
 
 router.post(
@@ -103,7 +105,7 @@ router.post(
       hasOcurred: Joi.boolean().required(),
     }),
   }),
-  calculateCategoryPercentage
+  calculateCategoryPercentage,
 );
 
 module.exports = router;

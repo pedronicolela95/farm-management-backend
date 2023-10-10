@@ -12,7 +12,9 @@ const NotAuthorizedError = require("../errors/not-authorized-err");
 const ConflictError = require("../errors/conflict-err");
 
 module.exports.createUsers = (req, res, next) => {
-  const { email, farmName, city, state, farmPhoto } = req.body;
+  const {
+    email, farmName, city, state, farmPhoto,
+  } = req.body;
 
   User.findOne({ email })
     .then((existingUser) => {
@@ -22,16 +24,14 @@ module.exports.createUsers = (req, res, next) => {
 
       return bcrypt.hash(req.body.password, 10);
     })
-    .then((hash) =>
-      User.create({
-        email,
-        password: hash,
-        farmName,
-        city,
-        state,
-        farmPhoto,
-      })
-    )
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      farmName,
+      city,
+      state,
+      farmPhoto,
+    }))
     .then((user) => res.send({ user }))
     .catch((err) => {
       if (err.name === "ValidationError") {

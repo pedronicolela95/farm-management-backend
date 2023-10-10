@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const validator = require("validator");
 
 const financialSchema = new mongoose.Schema({
   description: {
@@ -39,7 +38,7 @@ const financialSchema = new mongoose.Schema({
     default: 0,
     required: true,
     validate: {
-      validator: function (value) {
+      validator(value) {
         return value > 0;
       },
       message: "O campo 'amount' deve ser maior que zero.",
