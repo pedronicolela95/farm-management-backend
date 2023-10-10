@@ -31,3 +31,4 @@ Foram utilizadas JS e conexão com MongoDb
 **Dominios**
 
 - https://safe-farm-backend.onrender.com
+- https://farm-management-frontend.vercel.app/
