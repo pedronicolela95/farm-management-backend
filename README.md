@@ -30,5 +30,4 @@ Foram utilizadas JS e conexão com MongoDb
 
 **Dominios**
 
-- https://react-around-api-full-ptbr.vercel.app/
-- https://backend-around-tripleten.onrender.com
+- https://safe-farm-backend.onrender.com
